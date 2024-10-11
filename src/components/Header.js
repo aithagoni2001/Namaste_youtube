@@ -1,11 +1,20 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { toggleMenu } from "../utils/AppSlice";
 
 const Header = () => {
+
+  const dispatch = useDispatch()
+
+  const togglehandleclick =()=>{
+    dispatch(toggleMenu());
+
+  }
   return (
     <div className="grid grid-flow-col m-auto shadow-lg">
       <div className="flex col-span-1">
-        <img
-          className="h-20"
+        <img onClick={()=> togglehandleclick()}
+          className="h-20 cursor-pointer"
           src="https://rueeazy.github.io/youtube-clone/Assets/hamburger-icon.png"
           alt="hamburger-icon"
         />
@@ -26,14 +35,14 @@ const Header = () => {
         </button>
         {/* <img className="mx-auto h-10" src="https://www.iconpacks.net/icons/1/free-microphone-icon-342-thumb.png" alt="mic-icon" /> */}
       </div>
-      <div className="flex my-4 justify-evenly col-span-2 ">
+      <div className="flex my-4 justify-evenly col-span-2 cursor-pointer ">
         <img
           className="h-6 my-2"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhxOCMMODh9L9iJ2NfEORL0bR5lEuxCjujlQ&s"
           alt="Notification"
         />
         <img
-          className="h-10"
+          className="h-10 cursor-pointer"
           src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg"
           alt="profile-icon"
         />
