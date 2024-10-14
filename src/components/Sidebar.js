@@ -7,7 +7,7 @@ const Sidebar = () => {
   // early return
   if(!isOpenMenu) return null;
   return (
-    <div className='m-2  shadow-lg w-44 rounded-lg  '>
+    <div className='m-2  shadow-lg w-44 h-96 rounded-lg  '>
       <ul className='border border-b-gray-400 p-2'>
         <li>🏠Home</li>
         <li>📹shorts</li>
