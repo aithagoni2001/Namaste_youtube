@@ -8,11 +8,14 @@ const AppSlice = createSlice({
     },
     reducers:{
         toggleMenu :(state)=>{
-            state.isOpenMenu = ! state.isOpenMenu;
+            state.isOpenMenu = !state.isOpenMenu;
+        },
+        CloseMenu :(state)=>{
+            state.isOpenMenu = false;
         }
     }
 })
 
-export  const{toggleMenu}= AppSlice.actions;
+export  const{toggleMenu, CloseMenu}= AppSlice.actions;
 
 export default AppSlice.reducer;
