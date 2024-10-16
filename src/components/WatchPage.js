@@ -91,7 +91,7 @@ const WatchPage = () => {
           <ul>
             {Array.isArray(comments) && comments.length > 0 ? (
               comments.map((comment) => (
-                <li key={comment.id} className="mt-4">
+                <li key={comment.id} className="mt-4 w-auto">
                   <p className="font-semibold">
                     {comment.snippet.topLevelComment.snippet.authorDisplayName}
                   </p>
@@ -136,3 +136,5 @@ const WatchPage = () => {
 };
 
 export default WatchPage;
+
+
