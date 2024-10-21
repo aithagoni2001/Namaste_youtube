@@ -3,32 +3,17 @@ import { useDispatch } from "react-redux";
 import { CloseMenu } from "../utils/AppSlice";
 import { useSearchParams } from "react-router-dom";
 import { MY_API_KEY } from "../utils/Constants";
+import LiveChat from "./LiveChat";
 
 const WatchPage = () => {
   const [searchParams] = useSearchParams();
   const videoId = searchParams.get("v");
 
-  const [videoDetails, setVideoDetails] = useState(null);
   const [comments, setComments] = useState([]);
-  const [relatedVideos, setRelatedVideos] = useState([]);
 
   const dispatch = useDispatch();
 
-  // Wrapping the functions in useCallback to avoid re-creating on every render
-  const fetchVideoDetails = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${MY_API_KEY}`
-      );
-      const json = await response.json();
-      if (json.items && json.items.length > 0) {
-        setVideoDetails(json.items[0].snippet);
-      }
-    } catch (error) {
-      console.error("Failed to fetch video details:", error);
-    }
-  }, [videoId]);
-
+  // Fetch video comments (same logic as before)
   const fetchVideoComments = useCallback(async () => {
     try {
       const response = await fetch(
@@ -43,33 +28,17 @@ const WatchPage = () => {
     }
   }, [videoId]);
 
-  const fetchRelatedVideos = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=${videoId}&type=video&key=${MY_API_KEY}`
-      );
-      const json = await response.json();
-      if (json.items) {
-        setRelatedVideos(json.items);
-      }
-    } catch (error) {
-      console.error("Failed to fetch related videos:", error);
-    }
-  }, [videoId]);
-
   useEffect(() => {
     dispatch(CloseMenu());
-    fetchVideoDetails();
     fetchVideoComments();
-    fetchRelatedVideos();
-  }, [dispatch, fetchVideoDetails, fetchVideoComments, fetchRelatedVideos]); // Include all dependencies
+  }, [dispatch, fetchVideoComments]); // Dependencies for useEffect
 
   return (
     <div className="flex px-10 py-5">
-      {/* Left side: Video and Comments */}
-      <div className="w-8/12 pr-8">
+      {/* Left side: Video */}
+      <div className="flex-1 pr-8"> {/* Flex-1 ensures video takes as much space as possible */}
         <iframe
-          className="rounded-xl"
+          className="rounded-xl w-full"
           width="830"
           height="450"
           src={`https://www.youtube.com/embed/${videoId}`}
@@ -80,22 +49,20 @@ const WatchPage = () => {
           allowFullScreen
         ></iframe>
 
-        {videoDetails && (
-          <div className="mt-4">
-            <h2 className="text-2xl font-bold">{videoDetails.title}</h2>
-          </div>
-        )}
-
-        <div className="mt-6">
+        <div className="w-auto mt-6">
           <h3 className="text-xl font-semibold">Comments</h3>
           <ul>
             {Array.isArray(comments) && comments.length > 0 ? (
               comments.map((comment) => (
-                <li key={comment.id} className="mt-4 w-auto">
+                <li key={comment.id} className="mt-4 px-2 w-auto border-t-2 border-solid border-gray-100">
+                  <div className="flex"><img
+                     className="h-10 cursor-pointer"
+                     src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg"
+                     alt="profile-icon"/> <div className="px-2">
                   <p className="font-semibold">
                     {comment.snippet.topLevelComment.snippet.authorDisplayName}
                   </p>
-                  <p>{comment.snippet.topLevelComment.snippet.textDisplay}</p>
+                  <p>{comment.snippet.topLevelComment.snippet.textDisplay}</p></div></div>
                 </li>
               ))
             ) : (
@@ -105,36 +72,12 @@ const WatchPage = () => {
         </div>
       </div>
 
-      {/* Right side: Related Videos */}
-      <div className="w-4/12">
-        <h3 className="text-xl font-semibold mb-4">Related Videos</h3>
-        <ul>
-          {Array.isArray(relatedVideos) && relatedVideos.length > 0 ? (
-            relatedVideos.map((video) => (
-              <li key={video.id.videoId} className="mb-4">
-                <a href={`/watch?v=${video.id.videoId}`} className="flex items-start">
-                  <img
-                    src={video.snippet.thumbnails.medium.url}
-                    alt={video.snippet.title}
-                    className="mr-4 rounded-lg"
-                    width="120"
-                  />
-                  <div>
-                    <p className="font-semibold">{video.snippet.title}</p>
-                    <p className="text-sm text-gray-600">{video.snippet.channelTitle}</p>
-                  </div>
-                </a>
-              </li>
-            ))
-          ) : (
-            <p>Loading related videos...</p>
-          )}
-        </ul>
+      {/* Right side: LiveChat */}
+      <div > {/* Fixed width for LiveChat */}
+        <LiveChat />
       </div>
     </div>
   );
 };
 
 export default WatchPage;
-
-
